@@ -1,0 +1,85 @@
+services:
+  app:
+    # Harus image Docker Hub, bukan build: lokal (ketentuan TUBES).
+    image: ${DOCKERHUB_IMAGE:?Isi DOCKERHUB_IMAGE di file .env}
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      APP_NAME: ${APP_NAME:-Pendekin}
+      APP_ENV: ${APP_ENV:-production}
+      APP_KEY: ${APP_KEY:?Isi APP_KEY di file .env}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-http://localhost:8000}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-pendekin}
+      DB_USERNAME: ${DB_USERNAME:-pendekin}
+      DB_PASSWORD: ${DB_PASSWORD:?Isi DB_PASSWORD di file .env}
+      CACHE_STORE: redis
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "$$body = @file_get_contents('http://127.0.0.1:8000/health'); $$data = json_decode($$body === false ? '' : $$body, true); exit(($$data['status'] ?? '') === 'ok' && ($$data['database'] ?? '') === 'up' ? 0 : 1);"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
+    networks:
+      - frontend
+      - backend
+
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-pendekin}
+      MYSQL_USER: ${DB_USERNAME:-pendekin}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Isi DB_PASSWORD di file .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Isi MYSQL_ROOT_PASSWORD di file .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql -h 127.0.0.1 -u\"$$MYSQL_USER\" \"$$MYSQL_DATABASE\" -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
+    networks:
+      - backend
+
+  # Redis untuk konfigurasi cache aplikasi.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - backend
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
