@@ -33,7 +33,7 @@ pipeline {
         // Kode link contoh dari seeder untuk cek redirect 302 (tantangan K01).
         // Selama masih kosong, seeder dan cek 302 dilewati. Isi (mis. 'contoh')
         // setelah fitur redirect dan seeder link contoh sudah di-merge ke main.
-        SMOKE_CODE = ''
+        SMOKE_CODE = 'contoh'
     }
 
     stages {
