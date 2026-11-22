@@ -42,5 +42,7 @@ COPY --from=assets /app/public/build /var/www/html/public/build
 
 USER www-data
 EXPOSE 8000
+HEALTHCHECK --interval=15s --timeout=5s --start-period=45s --retries=5 \
+    CMD ["php", "docker/healthcheck.php"]
 # Untuk tugas kuliah gunakan server bawaan Laravel. Deploy hanya setelah MySQL healthy.
 CMD ["sh", "-c", "php artisan migrate --force && exec php artisan serve --host=0.0.0.0 --port=8000"]
