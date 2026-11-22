@@ -1,0 +1,18 @@
+Validation date: 2026-11-22 (Asia/Jakarta)
+Source: main 9b19664 + Docker changes in commit 6510ff2
+Branch: container/adithya
+Image: adithyaananda/pendekin:docker-validation-9b19664
+Registry digest: sha256:ca384721bb733d9b34182e27a9c9d2fc5d20348c50705877a0655e396730def2
+
+docker push: success, exit 0
+docker compose pull app: Pulled
+docker compose up -d --wait --wait-timeout 240: success, without --pull never
+app: healthy
+mysql: healthy
+redis: healthy
+Host endpoint: http://localhost:18081/health
+HTTP body: {"status":"ok","database":"up"}
+Image user: www-data
+Runtime restart policy: unless-stopped (all three services)
+Backend network: internal=true
+Only app publishes a host port; MySQL/Redis stay on backend network.

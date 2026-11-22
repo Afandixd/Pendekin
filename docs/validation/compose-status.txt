@@ -1,0 +1,4 @@
+NAME                          IMAGE                                              COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+pendekin-validation-app-1     adithyaananda/pendekin:docker-validation-9b19664   "docker-php-entrypoi…"   app       18 minutes ago   Up 17 minutes (healthy)   0.0.0.0:18081->8000/tcp, [::]:18081->8000/tcp
+pendekin-validation-mysql-1   mysql:8.4                                          "docker-entrypoint.s…"   mysql     25 minutes ago   Up 25 minutes (healthy)   3306/tcp, 33060/tcp
+pendekin-validation-redis-1   redis:7-alpine                                     "docker-entrypoint.s…"   redis     25 minutes ago   Up 16 minutes (healthy)   6379/tcp
