@@ -22,6 +22,8 @@ services:
       REDIS_CLIENT: phpredis
       REDIS_HOST: redis
       REDIS_PORT: "6379"
+      REDIS_DB: ${REDIS_DB:-0}
+      REDIS_CACHE_DB: ${REDIS_CACHE_DB:-1}
       SESSION_DRIVER: database
       QUEUE_CONNECTION: database
     depends_on:
@@ -30,7 +32,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "php", "-r", "$$body = @file_get_contents('http://127.0.0.1:8000/health'); $$data = json_decode($$body === false ? '' : $$body, true); exit(($$data['status'] ?? '') === 'ok' && ($$data['database'] ?? '') === 'up' ? 0 : 1);"]
+      test: ["CMD", "php", "docker/healthcheck.php"]
       interval: 15s
       timeout: 5s
       retries: 5

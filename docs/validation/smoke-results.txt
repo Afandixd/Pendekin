@@ -1,0 +1,15 @@
+PASS: Laravel uses MySQL
+PASS: Laravel uses Redis cache
+PASS: phpredis extension loaded
+PASS: Laravel Redis write/read
+PASS: HTTP health 200 / database up
+PASS: API creates link in MySQL (201)
+PASS: Active redirect 302 with correct Location
+PASS: Real Redis cache TTL is 1..60 seconds
+PASS: Second HTTP request uses Redis cache after DB update
+PASS: Unknown code 404
+PASS: Inactive code 410
+PASS: Expired code 410
+Waiting for the original 60-second cache TTL to expire...
+PASS: Redis entry actually expires
+PASS: Redirect reloads MySQL value after cache expiry

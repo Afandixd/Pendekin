@@ -1,0 +1,17 @@
+PASS  Tests\Feature\RedirectTest
+
+  ✓ active link redirects to target url                                  0.48s
+
+  ✓ unknown code returns 404                                             0.03s
+
+  ✓ inactive link returns 410                                            0.02s
+
+  ✓ expired link returns 410                                             0.02s
+
+  ✓ redirect uses cached link data                                       0.02s
+
+
+
+  Tests:    5 passed (9 assertions)
+
+  Duration: 0.89s
